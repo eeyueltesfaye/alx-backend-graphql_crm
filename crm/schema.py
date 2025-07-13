@@ -271,12 +271,34 @@ class Query(graphene.ObjectType):
     def resolve_total_revenue(self, info):
         result = Order.objects.aggregate(total=Sum('total_amount'))
         return result['total'] or 0.0
+class UpdateLowStockProducts(graphene.Mutation):
+    class Arguments:
+        pass  # No arguments required
+
+    updated_products = graphene.List(ProductType)
+    success = graphene.String()
+
+    def mutate(root, info):
+        updated = []
+        low_stock = Product.objects.filter(stock__lt=10)
+
+        for product in low_stock:
+            product.stock += 10
+            product.save()
+            updated.append(product)
+
+        return UpdateLowStockProducts(
+            updated_products=updated,
+            success="Stock updated successfully"
+        )
+    
 
 class Mutation(graphene.ObjectType):
     create_customer = CreateCustomer.Field()
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
     create_order = CreateOrder.Field()
+    update_low_stock_products = UpdateLowStockProducts.Field() 
 
 class CustomerFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains')
