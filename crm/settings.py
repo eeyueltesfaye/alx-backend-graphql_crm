@@ -28,4 +28,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'crm.tasks.generate_crm_report',
         'schedule': crontab(day_of_week='mon', hour=6, minute=0),
     },
+    
 } 
+
+# Cron Jobs Configuration
+CRONJOBS = [
+    # Heartbeat logger every 5 minutes
+    ('*/5 * * * *', 'crm.cron.log_crm_heartbeat'),
+
+    # Product stock updater every 12 hours
+    ('0 */12 * * *', 'crm.cron.update_low_stock'),
+]
