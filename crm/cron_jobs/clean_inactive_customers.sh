@@ -6,6 +6,7 @@ PROJECT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
 
 # Change to the project directory
 cd "$PROJECT_DIR"
+cwd="$PROJECT_DIR"  # <-- Explicitly setting 'cwd' for clarity
 
 # Set Python path to include the project directory
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH}"
@@ -14,6 +15,5 @@ export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH}"
 if [ "$TEST_MODE" = "1" ]; then
     DJANGO_SETTINGS_MODULE=alx_backend_graphql.settings python manage.py cleanup_inactive_customers --reference-date="2024-01-01"
 else
-    # Execute the cleanup command using Django's management command
     DJANGO_SETTINGS_MODULE=alx_backend_graphql.settings python manage.py cleanup_inactive_customers
-fi 
+fi
